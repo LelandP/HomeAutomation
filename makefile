@@ -1,4 +1,7 @@
-.PHONY: nodes
+.PHONY: nodes clean
+
+clean: nodes.clean
+	rm -rf output
 
 main.wheel:
 
@@ -10,6 +13,11 @@ virtualenv:
 	
 server.run: virtualenv
 	echo "server run"
+
+nodes.clean:
+	rm -rf nodes/dist
+	rm -rf nodes/build
+	rm -rf nodes/OSHA_nodes.egg-info
 
 nodes:
 	echo "nodes"
