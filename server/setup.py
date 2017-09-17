@@ -23,4 +23,7 @@ setup(
         "Programming Language :: Python :: 2.7",
     ],
     install_requires=REQUIRED,
+    entry_points={
+        'console_scripts': ['OSHA-Server=OSHA_server.server:main']
+    },
 )

@@ -16,15 +16,14 @@ setup(
     license = "unknown",
     keywords = "home automation",
     url = "Noneyet",
-    packages=['OSHA_nodes', 'OSHA_nodes.resources'],
+    packages=['OSHA_nodes'],
     long_description=read('README'),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 2.7",
     ],
-    package_data={'': ['api.yaml']},
     install_requires=REQUIRED,
     entry_points={
-        'console_scripts': ['OSHA-Water=OSHA_nodes.sensor:main']
+        'console_scripts': ['OSHA-Hue=OSHA_nodes.hue_controler:main']
     },
 )
