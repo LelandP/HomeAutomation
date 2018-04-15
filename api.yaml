@@ -1,0 +1,189 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: "1.0.0"
+  title: ""
+basePath: "/v1"
+schemes:
+- "http"
+paths:
+  /services:
+    get:
+      summary: ""
+      description: ""
+      operationId: "Controller.get_services"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: '#/definitions/ServiceList'
+  /services/{serviceid}:
+    get:
+      summary: ""
+      description: ""
+      operationId: "Controller.get_service"
+      parameters:
+      - in: "path"
+        name: "serviceid"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: '#/definitions/Service'
+  /services/{serviceid}/controls:
+    get:
+      summary: ""
+      description: ""
+      operationId: "Controller.get_controls"
+      parameters:
+      - in: "path"
+        name: "serviceid"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: '#/definitions/ControlList'
+  /services/{serviceid}/controls/{controlid}:
+    get:
+      summary: ""
+      description: ""
+      operationId: "Controller.get_control"
+      parameters:
+      - in: "path"
+        name: "serviceid"
+        type: "string"
+        required: true
+      - in: "path"
+        name: "controlid"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: '#/definitions/Control'
+  /services/{serviceid}/elements:
+    get:
+      summary: ""
+      description: ""
+      operationId: "Controller.get_elements"
+      parameters:
+      - in: "path"
+        name: "serviceid"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: '#/definitions/ElementList'
+  /services/{serviceid}/elements/{elementid}:
+    get:
+      summary: ""
+      description: ""
+      operationId: "Controller.get_element"
+      parameters:
+      - in: "path"
+        name: "serviceid"
+        type: "string"
+        required: true
+      - in: "path"
+        name: "elementid"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: '#/definitions/Element'
+definitions:
+  ServiceList:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        href:
+          type: "string"
+  Service:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      controls:
+        type: "string"
+      elements:
+        type: "string"
+  ControlList:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        href:
+          type: "string"
+  Control:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      action:
+        type: "string"
+      parent:
+        type: "string"
+      dataset:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            desc:
+              type: "string"
+            type:
+              type: "string"
+  ElementList:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        href:
+          type: "string"
+  Element:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      parent:
+        type: "string"
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            value:
+              type: "string"
