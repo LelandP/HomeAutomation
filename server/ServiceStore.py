@@ -7,12 +7,18 @@ class Store(object):
     def __init__(self):
         """
         """
+        #TO-DO: this id broken in the tests, we need to fix the plugin importing for tests
         self.services = []
 
-        module_list = plugins.get_all_plugins()
-        for module in module_list:
-            i = importlib.import_module("plugins." + module)
-            self.register_service(i.init_service_class())
+        try:
+
+            module_list = plugins.get_all_plugins()
+            for module in module_list:
+                i = importlib.import_module("plugins." + module)
+                self.register_service(i.init_service_class())
+
+        except:
+            print "Failed to load plugins"
 
     def register_service(self, service):
         """
@@ -47,6 +53,23 @@ class Service(object):
         if elements is not None:
             for element in elements:
                 self.register_element(element)
+
+        if controls is not None:
+            for control in controls:
+                self.register_control(control)
+
+    def register_control(self, control):
+        """
+        """
+        #TO-DO: merge is alredy exists
+        self.controls.append(control)
+
+    def get_control_using_id(self, uniqueid):
+        """
+        """
+        for control in self.controls:
+            if control.id == uniqueid:
+                return control
 
     def register_element(self, element):
         """
@@ -90,3 +113,48 @@ class Element(object):
             data.append({"name": key, "value": value})
         return dict(id=self.id, name=self.name, parent=self.parent,
                     data=data)
+
+class Control(object):
+    """
+    """
+    def __init__(self, name, parent, desc, action, callback=None, dataset=None):
+        """
+        """
+        self.id = name
+        self.name = self.id
+        self.parent = parent
+        self.desc = desc
+        self.action = action
+        self.callback = callback
+        if dataset is not None:
+            self.dataset = dataset
+        else:
+            self.dataset = {}
+
+    def call(self, data=None):
+        """
+        """
+        if self.callback is None:
+            return
+
+        if data is None:
+            data = []
+
+        kwargs = {}
+        for element in data:
+            kwargs.update({element["name"]: element["value"]})
+
+        self.callback(**kwargs)
+
+
+
+    def clean_dict(self):
+        """
+        """
+        dataset = []
+        for key, value in self.dataset.iteritems():
+            dataset.append({"name": key, "description": value["desc"], "type": value["type"]})
+        return dict(id=self.id, name=self.name, parent=self.parent,
+                    description=self.desc, action=self.action,
+                    dataset=dataset)
+        
