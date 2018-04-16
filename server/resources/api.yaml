@@ -154,7 +154,7 @@ definitions:
           properties:
             name:
               type: "string"
-            desc:
+            description:
               type: "string"
             type:
               type: "string"
