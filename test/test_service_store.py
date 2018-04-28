@@ -103,6 +103,8 @@ class TestElement():
         assert "name" in output
         assert "parent" in output
         assert "data" in output
+        assert "controls" in output
+        assert len(output["controls"]) == 0
         assert len(output["data"]) == 0
         assert output["name"] == TEST_ELEMENT_NAME
 
@@ -113,11 +115,89 @@ class TestElement():
         assert "name" in output
         assert "parent" in output
         assert "data" in output
+        assert "controls" in output
+        assert len(output["controls"]) == 0
         assert len(output["data"]) == 2
 
         for data in output["data"]:
             assert data["name"] in TEST_ELEMENT_DATA
             assert data["value"] == TEST_ELEMENT_DATA[data["name"]]
+
+    def test_single_control(self):
+        control = Control(name=TEST_CONTROL_NAME,
+                          parent="hue",
+                          desc="this is a control to turn on light",
+                          action="turn on",
+                          dataset=TEST_CONTROL_DATASET)
+        element = Element(name=TEST_ELEMENT_NAME, parent="Hue", data=TEST_ELEMENT_DATA, controls=[control])
+        output = element.clean_dict()
+
+        assert "name" in output
+        assert "parent" in output
+        assert "data" in output
+        assert "controls" in output
+        assert len(output["controls"]) == 1
+        assert len(output["data"]) == 2
+
+    def test_multiple_controls(self):
+        control = Control(name=TEST_CONTROL_NAME,
+                          parent="hue",
+                          desc="this is a control to turn on light",
+                          action="turn on",
+                          dataset=TEST_CONTROL_DATASET)
+        control2 = Control(name=TEST_CONTROL_NAME + "2",
+                          parent="hue",
+                          desc="this is a control to turn on light",
+                          action="turn on",
+                          dataset=TEST_CONTROL_DATASET)
+        element = Element(name=TEST_ELEMENT_NAME, parent="Hue", data=TEST_ELEMENT_DATA, controls=[control, control2])
+        output = element.clean_dict()
+
+        assert "name" in output
+        assert "parent" in output
+        assert "data" in output
+        assert "controls" in output
+        assert len(output["controls"]) == 2
+        assert len(output["data"]) == 2
+
+    def test_register_controls(self):
+        control = Control(name=TEST_CONTROL_NAME,
+                          parent="hue",
+                          desc="this is a control to turn on light",
+                          action="turn on",
+                          dataset=TEST_CONTROL_DATASET)
+        element = Element(name=TEST_ELEMENT_NAME, parent="Hue", data=TEST_ELEMENT_DATA)
+        element.register_control(control)
+        output = element.clean_dict()
+
+        assert "name" in output
+        assert "parent" in output
+        assert "data" in output
+        assert "controls" in output
+        assert len(output["controls"]) == 1
+        assert len(output["data"]) == 2
+
+    def test_control_by_id(self):
+        control = Control(name=TEST_CONTROL_NAME,
+                          parent="hue",
+                          desc="this is a control to turn on light",
+                          action="turn on",
+                          dataset=TEST_CONTROL_DATASET)
+        control2 = Control(name=TEST_CONTROL_NAME + "2",
+                          parent="hue",
+                          desc="this is a control to turn on light",
+                          action="turn on",
+                          dataset=TEST_CONTROL_DATASET)
+        element = Element(name=TEST_ELEMENT_NAME, parent="Hue", data=TEST_ELEMENT_DATA, controls=[control, control2])
+
+        output = element.get_control_using_id(TEST_CONTROL_NAME)
+        output = output.clean_dict()
+
+        assert "name" in output
+        assert "parent" in output
+        assert "description" in output
+        assert "action" in output
+        assert len(output["dataset"]) == 2
 
 class TestService():
 
@@ -134,9 +214,7 @@ class TestService():
         assert "id" in output
         assert output["id"] is TEST_SERVICE_NAME
         assert "elements" in output
-        assert "controls" in output
         assert len(output["elements"]) == 1
-        assert len(output["controls"]) == 0
 
     def test_multiple_elements(self):
         element = Element(name=TEST_ELEMENT_NAME, parent="Hue", data=TEST_ELEMENT_DATA)
@@ -149,15 +227,7 @@ class TestService():
         assert "id" in output
         assert output["id"] is TEST_SERVICE_NAME
         assert "elements" in output
-        assert "controls" in output
         assert len(output["elements"]) == 2
-        assert len(output["controls"]) == 0
-
-    def test_single_control(self):
-        pytest.skip()
-
-    def test_multiple_controls(self):
-        pytest.skip()
 
     def test_register_element(self):
         element = Element(name=TEST_ELEMENT_NAME, parent="Hue", data=TEST_ELEMENT_DATA)
@@ -170,12 +240,8 @@ class TestService():
         assert "id" in output
         assert output["id"] is TEST_SERVICE_NAME
         assert "elements" in output
-        assert "controls" in output
         assert len(output["elements"]) == 1
-        assert len(output["controls"]) == 0
 
-    def test_register_controls(self):
-        pytest.skip()
 
     def test_element_by_id(self):
         element = Element(name=TEST_ELEMENT_NAME, parent="Hue", data=TEST_ELEMENT_DATA)
@@ -183,18 +249,21 @@ class TestService():
         service = Service(name = TEST_SERVICE_NAME, elements=[element, element2])
 
         output = service.get_element_using_id(TEST_ELEMENT_NAME)
-        output = element.clean_dict()
+        output = output.clean_dict()
 
         assert "name" in output
         assert "parent" in output
         assert "data" in output
         assert len(output["data"]) == 2
 
-    def test_control_by_id(self):
-        pytest.skip()
 
     def test_complete_service(self):
-        pytest.skip()
+        element = Element(name=TEST_ELEMENT_NAME, parent="Hue", data=TEST_ELEMENT_DATA)
+        service = Service(name = TEST_SERVICE_NAME, elements=[element])
+
+        output = service.clean_dict()
+
+        assert len(output["elements"]) == 1
 
     def test_merge(self):
         pytest.skip()
@@ -203,6 +272,7 @@ class TestStore():
 
     def test_no_service(self):
         store = Store()
+        assert len(store.clean_dict()) is 0
 
     def test_register_method_one_service(self):
         store = Store()
@@ -221,7 +291,6 @@ class TestStore():
         assert "id" in output[0]
         assert output[0]["id"] is TEST_SERVICE_NAME
         assert "elements" in output[0]
-        assert "controls" in output[0]
 
     def test_get_id_one_service(self):
         store = Store()
@@ -236,7 +305,6 @@ class TestStore():
         assert "id" in output
         assert output["id"] is TEST_SERVICE_NAME
         assert "elements" in output
-        assert "controls" in output
 
     def test_dict_many_service(self):
         store = Store()
@@ -264,7 +332,6 @@ class TestStore():
         assert "id" in output
         assert output["id"] is TEST_SERVICE_NAME
         assert "elements" in output
-        assert "controls" in output
 
         service = store.get_service_using_id(TEST_SERVICE_NAME2)
         output = service.clean_dict()
@@ -274,7 +341,6 @@ class TestStore():
         assert "id" in output
         assert output["id"] is TEST_SERVICE_NAME2
         assert "elements" in output
-        assert "controls" in output
 
     def test_merge_services(self):
         pytest.skip("apples")
