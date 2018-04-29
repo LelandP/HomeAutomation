@@ -31,7 +31,7 @@ def get_elements(serviceid):
     service = store.get_service_using_id(serviceid)
     if service is None:
         return "Service Not Found", 404
-    return [filter_dict(e, exclude=["data", "parent"]) for e in add_href_to_list(request.url, service.clean_dict()["elements"])]
+    return [filter_dict(e, exclude=["data", "parent", "controls"]) for e in add_href_to_list(request.url, service.clean_dict()["elements"])]
 
 def get_element(serviceid, elementid):
     """

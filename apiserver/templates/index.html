@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<title>Home Automation UI (server: {{address}})</title>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="{{url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+<script src="{{url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.css') }}">
+<script type=text/javascript src="{{url_for('static', filename='HAscript.js') }}"></script>
+
+<style type="text/css">
+   body { background: #404040 !important; }
+</style>
+
+<script>
+
+var api_address = "http://" + "{{address}}" + "/v1";
+
+$( document ).ready(function() {
+	init(api_address)
+});
+
+</script>
+</head>
+
+<body>
+
+	<div class="container">
+		<div class="container-fluid">
+			<div id="tile_panel", class="row">
+			</div>
+		</div>
+	</div>
+</body>
+</html>
