@@ -15,10 +15,12 @@ class Store(object):
             module_list = plugins.get_all_plugins()
             for module in module_list:
                 i = importlib.import_module("plugins." + module)
-                self.register_service(i.init_service_class())
+                service = i.init_service_class()
+                if service is not None:
+                    self.register_service(service)
 
-        except:
-            print "Failed to load plugins"
+        except Exception as e:
+            print "Failed to load plugin: {}".format(e.message)
 
     def register_service(self, service):
         """
@@ -42,34 +44,16 @@ class Store(object):
 class Service(object):
     """
     """
-    def __init__(self, name, controls=None, elements=None):
+    def __init__(self, name, elements=None):
         """
         """
         self.id = name
         self.name = self.id
-        self.controls = []
         self.elements = []
 
         if elements is not None:
             for element in elements:
                 self.register_element(element)
-
-        if controls is not None:
-            for control in controls:
-                self.register_control(control)
-
-    def register_control(self, control):
-        """
-        """
-        #TO-DO: merge is alredy exists
-        self.controls.append(control)
-
-    def get_control_using_id(self, uniqueid):
-        """
-        """
-        for control in self.controls:
-            if control.id == uniqueid:
-                return control
 
     def register_element(self, element):
         """
@@ -88,22 +72,39 @@ class Service(object):
         """
         """
         return dict(id=self.id, name=self.name,
-                    elements=[e.clean_dict() for e in self.elements],
-                    controls=[c.clean_dict() for c in self.controls])
+                    elements=[e.clean_dict() for e in self.elements])
 
 class Element(object):
     """
     """
-    def __init__(self, name, parent, data=None):
+    def __init__(self, name, parent, controls=None, data=None):
         """
         """
         self.id = name
         self.name = self.id
+        self.controls = []
         self.parent = parent
         if data is not None:
             self.data = data
         else:
             self.data = {}
+
+        if controls is not None:
+            for control in controls:
+                self.register_control(control)
+
+    def register_control(self, control):
+        """
+        """
+        #TO-DO: merge is alredy exists
+        self.controls.append(control)
+
+    def get_control_using_id(self, uniqueid):
+        """
+        """
+        for control in self.controls:
+            if control.id == uniqueid:
+                return control
 
     def clean_dict(self):
         """
@@ -112,7 +113,7 @@ class Element(object):
         for key, value in self.data.iteritems():
             data.append({"name": key, "value": value})
         return dict(id=self.id, name=self.name, parent=self.parent,
-                    data=data)
+                    data=data, controls=[c.clean_dict() for c in self.controls])
 
 class Control(object):
     """

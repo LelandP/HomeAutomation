@@ -32,40 +32,6 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/Service'
-  /services/{serviceid}/controls:
-    get:
-      summary: ""
-      description: ""
-      operationId: "Controller.get_controls"
-      parameters:
-      - in: "path"
-        name: "serviceid"
-        type: "string"
-        required: true
-      responses:
-        200:
-          description: ""
-          schema:
-            $ref: '#/definitions/ControlList'
-  /services/{serviceid}/controls/{controlid}:
-    get:
-      summary: ""
-      description: ""
-      operationId: "Controller.get_control"
-      parameters:
-      - in: "path"
-        name: "serviceid"
-        type: "string"
-        required: true
-      - in: "path"
-        name: "controlid"
-        type: "string"
-        required: true
-      responses:
-        200:
-          description: ""
-          schema:
-            $ref: '#/definitions/Control'
   /services/{serviceid}/elements:
     get:
       summary: ""
@@ -100,6 +66,48 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/Element'
+  /services/{serviceid}/elements/{elementid}/controls:
+    get:
+      summary: ""
+      description: ""
+      operationId: "Controller.get_controls"
+      parameters:
+      - in: "path"
+        name: "serviceid"
+        type: "string"
+        required: true
+      - in: "path"
+        name: "elementid"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: '#/definitions/ControlList'
+  /services/{serviceid}/elements/{elementid}/controls/{controlid}:
+    get:
+      summary: ""
+      description: ""
+      operationId: "Controller.get_control"
+      parameters:
+      - in: "path"
+        name: "serviceid"
+        type: "string"
+        required: true
+      - in: "path"
+        name: "elementid"
+        type: "string"
+        required: true
+      - in: "path"
+        name: "controlid"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: '#/definitions/Control'
 definitions:
   ServiceList:
     type: "array"
@@ -119,10 +127,39 @@ definitions:
         type: "string"
       name:
         type: "string"
-      controls:
-        type: "string"
       elements:
         type: "string"
+  ElementList:
+    type: "array"
+    items:
+      type: "object"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        href:
+          type: "string"
+  Element:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      parent:
+        type: "string"
+      controls:
+        type: "string"
+      data:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+            value:
+              type: "string"
   ControlList:
     type: "array"
     items:
@@ -157,33 +194,4 @@ definitions:
             description:
               type: "string"
             type:
-              type: "string"
-  ElementList:
-    type: "array"
-    items:
-      type: "object"
-      properties:
-        id:
-          type: "string"
-        name:
-          type: "string"
-        href:
-          type: "string"
-  Element:
-    type: "object"
-    properties:
-      id:
-        type: "string"
-      name:
-        type: "string"
-      parent:
-        type: "string"
-      data:
-        type: "array"
-        items:
-          type: "object"
-          properties:
-            name:
-              type: "string"
-            value:
               type: "string"

@@ -1,9 +1,9 @@
-
+import urllib
 def add_href_to_list(url, in_list, key="id"):
     """
     """
     for item in in_list:
-        item.update( {"href": url + "/" + item[key]})
+        item.update( {"href": url + "/" + urllib.quote_plus(item[key])})
     return in_list
 
 def filter_dict(indict, exclude=None):
